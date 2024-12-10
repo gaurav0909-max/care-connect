@@ -16,7 +16,7 @@ export enum FormFieldType {
   TEXTAREA = "textarea",
   PHONE_INPUT = "phoneInput",
   CHECKBOX = "checkbox",
-  DATE_PICKET = "datePicker",
+  DATE_PICKER = "datePicker",
   SELECT = "select",
   SKELETON = "skeleton",
 }
@@ -45,7 +45,6 @@ const PatientForm = () => {
         email,
         phone,
       };
-      console.log("userData", userData);
       const user = await createUser(userData);
       console.log("user", user);
       if (user) {

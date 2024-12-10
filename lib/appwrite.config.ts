@@ -11,11 +11,6 @@ export const {
     APPOINTMENT_COLLECTION_ID,
 } = process.env;
 
-// Log for debugging
-console.log("Endpoint:", NEXT_PUBLIC_ENDPOINT);
-console.log("Project ID:", NEXT_PUBLIC_PROJECT_ID);
-console.log("API Key:", NEXT_PUBLIC_API_KEY);
-
 // Initialize Appwrite client
 const client = new sdk.Client();
 client
