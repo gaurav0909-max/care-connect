@@ -2,14 +2,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import { Form, FormControl } from "@/components/ui/form";
-import CustomFormField from "../CustomFormField";
+import CustomFormField from "../ui/CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
-import { PatientFormValidation, UserFormValidation } from "@/lib/validation";
 import { useRouter } from "next/navigation";
-import { createUser, registerPatient } from "@/lib/actions/patient.actions";
+import { createUser, regiserPatient } from "@/lib/actions/patient.actions";
 import { FormFieldType } from "./PatientForm";
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 import {
@@ -22,10 +20,13 @@ import { Label } from "../ui/label";
 import Image from "next/image";
 import { SelectItem } from "../ui/select";
 import FileUploader from "../FileUploader";
+import { PatientFormValidation } from "@/lib/validation";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
+
   const form = useForm<z.infer<typeof PatientFormValidation>>({
     resolver: zodResolver(PatientFormValidation),
     defaultValues: {
@@ -40,10 +41,7 @@ const RegisterForm = ({ user }: { user: User }) => {
     setIsLoading(true);
 
     let formData;
-    if (
-      values.identificationDocument &&
-      values.identificationDocument.length > 0
-    ) {
+    if (values.identificationDocument && values.identificationDocument.length) {
       const blobFile = new Blob([values.identificationDocument[0]], {
         type: values.identificationDocument[0].type,
       });
@@ -53,14 +51,16 @@ const RegisterForm = ({ user }: { user: User }) => {
       formData.append("fileName", values.identificationDocument[0].name);
     }
     try {
+      const { disclosureConsent, treatmentConsent, ...filteredValues } = values;
+
       const patientData = {
-        ...values,
+        ...filteredValues,
         userId: user.$id,
         birthDate: new Date(values.birthDate),
-        IdentificationDocument: formData,
+        identificationDocument: formData,
       };
-      //@ts-ignore
-      const patient = await registerPatient(patientData);
+      // @ts-ignore
+      const patient = await regiserPatient(patientData);
       if (patient) router.push(`/patients/${user.$id}/new-appointment`);
     } catch (error) {
       console.log("error", error);

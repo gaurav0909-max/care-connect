@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import CustomFormField from "../CustomFormField";
+import CustomFormField from "../ui/CustomFormField";
 import SubmitButton from "../SubmitButton";
 import { useState } from "react";
 import { UserFormValidation } from "@/lib/validation";
@@ -46,7 +46,6 @@ const PatientForm = () => {
         phone,
       };
       const user = await createUser(userData);
-      console.log("user", user);
       if (user) {
         router.push(`/patients/${user.$id}/register`);
       }

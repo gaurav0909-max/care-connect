@@ -40,7 +40,6 @@
     "react-dropzone": "^14.3.5",
     "react-hook-form": "^7.51.4",
     "react-phone-number-input": "^3.4.1",
-    "swr": "^2.2.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "twilio": "^5.0.4",

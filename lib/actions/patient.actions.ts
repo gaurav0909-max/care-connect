@@ -1,9 +1,9 @@
+"use server"
 import { ID, Query } from "node-appwrite";
 import { DATABASE_ID, databases, NEXT_PUBLIC_BUCKET_ID, NEXT_PUBLIC_ENDPOINT, NEXT_PUBLIC_PROJECT_ID, PATIENT_COLLECTION_ID, storage, users } from "../appwrite.config";
 import { parseStringify } from "../utils";
-import { InputFile } from "node-appwrite/file"
-import fs from 'fs';
-import path from 'path';
+import { InputFile } from 'node-appwrite/file';
+
 export const createUser = async (user: CreateUserParams) => {
     try {
         // Create new user
@@ -32,6 +32,7 @@ export const createUser = async (user: CreateUserParams) => {
     }
 };
 
+
 export const getUser = async (userId: string) => {
     try {
         const user = await users.get(userId);
@@ -39,18 +40,18 @@ export const getUser = async (userId: string) => {
     } catch (error) {
         console.log('error', error)
     }
-}
+};
 
-export const registerPatient = async ({ identificationDocument, ...patient }
-    : RegisterUserParams) => {
+export const regiserPatient = async ({ identificationDocument, ...patient }:
+    RegisterUserParams
+) => {
     try {
         let file;
         if (identificationDocument) {
             const inputFile = InputFile.fromBuffer(
-                identificationDocument?.get('blogFile') as Blob,
-                identificationDocument?.get('fileName') as string,
+                identificationDocument?.get('blobFile') as Blob,
+                identificationDocument.get('fileName') as string,
             )
-
             file = await storage.createFile(NEXT_PUBLIC_BUCKET_ID!, ID.unique(), inputFile)
         }
 
@@ -60,12 +61,11 @@ export const registerPatient = async ({ identificationDocument, ...patient }
             ID.unique(),
             {
                 identificationDocumentId: file?.$id || null,
-                identificationDocumentUrl: `${NEXT_PUBLIC_ENDPOINT}/storage/buckets/${NEXT_PUBLIC_BUCKET_ID}/
-                files/${file?.$id}/view?project=${NEXT_PUBLIC_PROJECT_ID}`,
+                identificationDocumentUrl: `${NEXT_PUBLIC_ENDPOINT}/storage/buckets/
+                ${NEXT_PUBLIC_BUCKET_ID}/files/${file?.$id}/view?project=${NEXT_PUBLIC_PROJECT_ID}`,
                 ...patient
             }
         )
-
         return parseStringify(newPatient)
     } catch (error) {
         console.log(error)
