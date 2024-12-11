@@ -2,7 +2,6 @@
 import React from "react";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,13 +13,12 @@ import { FormFieldType } from "../forms/PatientForm";
 import Image from "next/image";
 import "react-phone-number-input/style.css";
 import PhoneInput from "react-phone-number-input";
-import { E164Number } from "libphonenumber-js";
 import DatePicker from "react-datepicker";
-
 import "react-datepicker/dist/react-datepicker.css";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./select";
 import { Textarea } from "./textarea";
 import { Checkbox } from "./checkbox";
+import type { E164Number } from "libphonenumber-js";
 
 interface CustomProps {
   control: Control<any>;
