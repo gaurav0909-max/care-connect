@@ -42,7 +42,7 @@ export const getUser = async (userId: string) => {
     }
 };
 
-export const regiserPatient = async ({ identificationDocument, ...patient }:
+export const registerPatient = async ({ identificationDocument, ...patient }:
     RegisterUserParams
 ) => {
     try {
