@@ -25,7 +25,7 @@ export default async function NewAppointment({
             userId={userId}
             patientId={patient.$id}
           />
-          <p className="copyright mt-10 py-12">@2024 CareConnect</p>
+          <p className="copyright mt-10 py-12">© 2024 CareConnect</p>
         </div>
       </section>
       <Image

@@ -58,6 +58,7 @@ const AppointmentForm = ({
         status = "pending";
         break;
     }
+
     try {
       if (type === "create" && patientId) {
         const appointment = {
