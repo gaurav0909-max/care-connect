@@ -12,7 +12,6 @@ import { createUser } from "@/lib/actions/patient.actions";
 import { FormFieldType } from "./PatientForm";
 import { Doctors } from "@/constants";
 import { SelectItem } from "../ui/select";
-import Image from "next/image";
 import { types } from "util";
 import {
   createAppointment,
@@ -20,6 +19,7 @@ import {
 } from "@/lib/actions/appointment.action";
 import { getAppointmentSchema } from "@/lib/validation";
 import { Appointment } from "@/types/appwrite.types";
+import Image from "next/image";
 
 const AppointmentForm = ({
   userId,
@@ -38,7 +38,7 @@ const AppointmentForm = ({
   const AppointmentFormValidation = getAppointmentSchema(type);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(appointment);
+  console.log("appointment", appointment);
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
@@ -51,7 +51,6 @@ const AppointmentForm = ({
   });
 
   async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
-    console.log("type", type);
     setIsLoading(true);
 
     let status;
@@ -103,7 +102,7 @@ const AppointmentForm = ({
           },
           type,
         };
-
+        console.log("first", appointmentToUpdate);
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if (updatedAppointment) {
