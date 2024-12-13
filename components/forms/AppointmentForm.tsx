@@ -32,7 +32,7 @@ const AppointmentForm = ({
   patientId: string;
   type: "create" | "cancel" | "schedule";
   appointment?: Appointment;
-  setOpen: (open: boolean) => void;
+  setOpen?: (open: boolean) => void;
 }) => {
   const router = useRouter();
   const AppointmentFormValidation = getAppointmentSchema(type);
@@ -46,7 +46,7 @@ const AppointmentForm = ({
       schedule: appointment ? new Date(appointment.schedule) : new Date(),
       reason: appointment ? appointment.reason : "",
       note: appointment ? appointment.note : "",
-      cancellationReason: appointment ? appointment.cancellationReason : "",
+      cancellationReason: appointment?.cancellationReason || "",
     },
   });
 

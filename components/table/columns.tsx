@@ -10,7 +10,7 @@ import AppointmentModal from "../AppointmentModal";
 
 export const columns: ColumnDef<Appointment>[] = [
   {
-    header: "#",
+    header: "ID",
     cell: ({ row }) => {
       return <p className="text-14-medium ">{row.index + 1}</p>;
     },
