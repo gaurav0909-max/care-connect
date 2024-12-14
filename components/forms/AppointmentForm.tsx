@@ -1,72 +1,71 @@
 "use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import CustomFormField from "../ui/CustomFormField";
-import SubmitButton from "../SubmitButton";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { createUser } from "@/lib/actions/patient.actions";
-import { FormFieldType } from "./PatientForm";
+import { SelectItem } from "@/components/ui/select";
 import { Doctors } from "@/constants";
-import { SelectItem } from "../ui/select";
-import { types } from "util";
+import { getAppointmentSchema } from "@/lib/validation";
+import { Appointment } from "@/types/appwrite.types";
+import "react-datepicker/dist/react-datepicker.css";
+import SubmitButton from "../SubmitButton";
+import { Form } from "../ui/form";
 import {
   createAppointment,
   updateAppointment,
 } from "@/lib/actions/appointment.action";
-import { getAppointmentSchema } from "@/lib/validation";
-import { Appointment } from "@/types/appwrite.types";
-import Image from "next/image";
+import CustomFormField from "../ui/CustomFormField";
+import { FormFieldType } from "./PatientForm";
 
-const AppointmentForm = ({
+export const AppointmentForm = ({
   userId,
   patientId,
-  type,
+  type = "create",
   appointment,
   setOpen,
 }: {
   userId: string;
   patientId: string;
-  type: "create" | "cancel" | "schedule";
+  type: "create" | "schedule" | "cancel";
   appointment?: Appointment;
-  setOpen?: (open: boolean) => void;
+  setOpen?: Dispatch<SetStateAction<boolean>>;
 }) => {
   const router = useRouter();
-  const AppointmentFormValidation = getAppointmentSchema(type);
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log("appointment", appointment);
+  const AppointmentFormValidation = getAppointmentSchema(type);
+
   const form = useForm<z.infer<typeof AppointmentFormValidation>>({
     resolver: zodResolver(AppointmentFormValidation),
     defaultValues: {
-      primaryPhysician: appointment && appointment.primaryPhysician,
-      schedule: appointment ? new Date(appointment.schedule) : new Date(),
+      primaryPhysician: appointment ? appointment?.primaryPhysician : "",
+      schedule: appointment
+        ? new Date(appointment?.schedule!)
+        : new Date(Date.now()),
       reason: appointment ? appointment.reason : "",
-      note: appointment ? appointment.note : "",
+      note: appointment?.note || "",
       cancellationReason: appointment?.cancellationReason || "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof AppointmentFormValidation>) {
+  const onSubmit = async (
+    values: z.infer<typeof AppointmentFormValidation>
+  ) => {
     setIsLoading(true);
 
     let status;
-
     switch (type) {
       case "schedule":
         status = "scheduled";
         break;
-
       case "cancel":
         status = "cancelled";
         break;
-
       default:
         status = "pending";
-        break;
     }
 
     try {
@@ -90,19 +89,18 @@ const AppointmentForm = ({
           );
         }
       } else {
-        console.log("updating appointment");
         const appointmentToUpdate = {
           userId,
           appointmentId: appointment?.$id!,
           appointment: {
-            primaryPhysician: values?.primaryPhysician,
-            schedule: new Date(values?.schedule),
+            primaryPhysician: values.primaryPhysician,
+            schedule: new Date(values.schedule),
             status: status as Status,
-            cancellationReason: values?.cancellationReason,
+            cancellationReason: values.cancellationReason,
           },
           type,
         };
-        console.log("first", appointmentToUpdate);
+
         const updatedAppointment = await updateAppointment(appointmentToUpdate);
 
         if (updatedAppointment) {
@@ -111,37 +109,31 @@ const AppointmentForm = ({
         }
       }
     } catch (error) {
-      console.log("error", error);
+      console.log(error);
     }
-  }
+    setIsLoading(false);
+  };
 
   let buttonLabel;
-
   switch (type) {
     case "cancel":
       buttonLabel = "Cancel Appointment";
       break;
-
-    case "create":
-      buttonLabel = "Create Appointment";
-      break;
-
     case "schedule":
       buttonLabel = "Schedule Appointment";
       break;
-
     default:
-      break;
+      buttonLabel = "Submit Apppointment";
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 flex-1">
-        {type == "create" && (
-          <section className="mb-12 space-y-4 ">
-            <h1 className="header">New Appointment </h1>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1 space-y-6">
+        {type === "create" && (
+          <section className="mb-12 space-y-4">
+            <h1 className="header">New Appointment</h1>
             <p className="text-dark-700">
-              Request a new appointment in 10 seconds
+              Request a new appointment in 10 seconds.
             </p>
           </section>
         )}
@@ -177,23 +169,28 @@ const AppointmentForm = ({
               name="schedule"
               label="Expected appointment date"
               showTimeSelect
-              dateFormat="MM/dd/yyyy - h:mm aa"
+              dateFormat="MM/dd/yyyy  -  h:mm aa"
             />
 
-            <div className="flex flex-col gap-6 xl:flex-row ">
+            <div
+              className={`flex flex-col gap-6  ${type === "create" && "xl:flex-row"}`}
+            >
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
                 name="reason"
-                label="Reason for appointment"
-                placeHolder="Enter reason for appointment"
+                label="Appointment reason"
+                placeHolder="Annual montly check-up"
+                disabled={type === "schedule"}
               />
+
               <CustomFormField
                 fieldType={FormFieldType.TEXTAREA}
                 control={form.control}
                 name="note"
-                label="Notes"
-                placeHolder="Enter notes"
+                label="Comments/notes"
+                placeHolder="Prefer afternoon appointments, if possible"
+                disabled={type === "schedule"}
               />
             </div>
           </>
@@ -205,7 +202,7 @@ const AppointmentForm = ({
             control={form.control}
             name="cancellationReason"
             label="Reason for cancellation"
-            placeHolder="Enter reason for cancellation"
+            placeHolder="Urgent meeting came up"
           />
         )}
 
@@ -219,5 +216,3 @@ const AppointmentForm = ({
     </Form>
   );
 };
-
-export default AppointmentForm;
