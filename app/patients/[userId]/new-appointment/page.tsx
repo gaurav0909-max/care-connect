@@ -9,6 +9,7 @@ export default async function NewAppointment({
   params: { userId },
 }: SearchParamProps) {
   const patient = await getPatient(userId);
+
   return (
     <div className="flex h-screen max-h-screen">
       <section className="remove-scrollbar container my-auto">
