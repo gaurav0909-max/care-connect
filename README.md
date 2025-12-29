@@ -48,7 +48,7 @@ A modern, full-featured healthcare appointment management platform with secure a
 - 📊 **Real-time Dashboard** - Admin analytics and appointment management
 - 🗂️ **Document Management** - Secure file uploads for patient records
 - 🌙 **Dark Theme** - Modern dark mode interface
-- 🚀 **Production Ready** - Sentry integration for error monitoring
+- 🚀 **Production Ready** - Optimized for deployment
 
 ---
 
@@ -109,7 +109,6 @@ A modern, full-featured healthcare appointment management platform with secure a
 - **Responsive Tables** - Mobile-optimized data tables
 - **File Upload** - Drag-and-drop document upload
 - **Theme System** - Dark theme with next-themes
-- **Error Tracking** - Sentry integration for production monitoring
 - **Type Safety** - Full TypeScript coverage
 
 ---
@@ -142,7 +141,6 @@ A modern, full-featured healthcare appointment management platform with secure a
 - **[next-themes](https://github.com/pacocoursey/next-themes)** - Theme management
 
 ### Monitoring & Tools
-- **[Sentry](https://sentry.io/)** - Error tracking and performance monitoring
 - **[Twilio](https://www.twilio.com/)** - SMS notification service
 - **[ESLint](https://eslint.org/)** & **[Prettier](https://prettier.io/)** - Code quality and formatting
 
@@ -156,7 +154,6 @@ Before running this project, ensure you have:
 - **npm** / **yarn** / **pnpm** - Package manager
 - **Appwrite Account** - [Sign up](https://appwrite.io/) (Free tier available)
 - **SMTP Service** (for emails) - Gmail, SendGrid, AWS SES, or similar
-- **Sentry Account** (optional) - [Sign up](https://sentry.io/) for error monitoring
 - **Twilio Account** (optional) - [Sign up](https://www.twilio.com/) for SMS notifications
 
 ---
@@ -285,9 +282,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 # Admin Access (Legacy - will be replaced by proper auth)
 NEXT_PUBLIC_ADMIN_PASSKEY=123456
-
-# Sentry (Optional - for error monitoring)
-SENTRY_AUTH_TOKEN=your_sentry_token_here
 
 # Twilio (Optional - for SMS notifications)
 TWILIO_ACCOUNT_SID=your_twilio_account_sid
@@ -527,7 +521,6 @@ care-connect/
 
 | Variable | Description | Required For |
 |----------|-------------|--------------|
-| `SENTRY_AUTH_TOKEN` | Sentry authentication token | Error monitoring |
 | `TWILIO_ACCOUNT_SID` | Twilio account SID | SMS notifications |
 | `TWILIO_AUTH_TOKEN` | Twilio auth token | SMS notifications |
 | `TWILIO_PHONE_NUMBER` | Twilio phone number | SMS notifications |
@@ -550,7 +543,6 @@ care-connect/
 Make sure to update:
 - `NEXT_PUBLIC_APP_URL` to your production domain
 - Configure production SMTP settings
-- Add production Sentry DSN
 
 ### Post-Deployment Checklist
 
@@ -561,7 +553,6 @@ Make sure to update:
 - [ ] Set up custom domain (optional)
 - [ ] Configure SSL certificate
 - [ ] Test admin and patient flows
-- [ ] Monitor error logs in Sentry
 
 ---
 
