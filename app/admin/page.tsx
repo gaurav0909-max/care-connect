@@ -5,6 +5,7 @@ import { getRecentAppointmentList } from "@/lib/actions/appointment.action";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import LogoutButton from "@/components/LogoutButton";
 
 const Admin = async () => {
   const appointments = await getRecentAppointmentList();
@@ -23,6 +24,8 @@ const Admin = async () => {
         </Link>
 
         <p className="text-16-semibold">Admin Dashboard</p>
+
+        <LogoutButton variant="outline" />
       </header>
 
       <main className="admin-main">
