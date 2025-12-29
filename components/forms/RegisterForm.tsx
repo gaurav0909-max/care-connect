@@ -24,9 +24,12 @@ import { registerPatient } from "@/lib/actions/patient.actions";
 import CustomFormField from "../ui/CustomFormField";
 import { FormFieldType } from "./PatientForm";
 import FileUploader from "../FileUploader";
+import { useAuth } from "@/context/AuthContext";
+import { users } from "@/lib/appwrite.config";
 
 const RegisterForm = ({ user }: { user: User }) => {
   const router = useRouter();
+  const { refreshUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<z.infer<typeof PatientFormValidation>>({
@@ -87,6 +90,14 @@ const RegisterForm = ({ user }: { user: User }) => {
       const newPatient = await registerPatient(patient);
 
       if (newPatient) {
+        // Update user prefs to mark onboarding as complete
+        await users.updatePrefs(user.$id, {
+          onboardingComplete: true,
+        });
+
+        // Refresh user state in AuthContext
+        await refreshUser();
+
         router.push(`/patients/${user.$id}/new-appointment`);
       }
     } catch (error) {
@@ -123,26 +134,14 @@ const RegisterForm = ({ user }: { user: User }) => {
             iconAlt="user"
           />
 
-          {/* EMAIL & PHONE */}
-          <div className="flex flex-col gap-6 xl:flex-row">
-            <CustomFormField
-              fieldType={FormFieldType.INPUT}
-              control={form.control}
-              name="email"
-              label="Email address"
-              placeHolder="johndoe@gmail.com"
-              iconSrc="/assets/icons/email.svg"
-              iconAlt="email"
-            />
-
-            <CustomFormField
-              fieldType={FormFieldType.PHONE_INPUT}
-              control={form.control}
-              name="phone"
-              label="Phone Number"
-              placeHolder="(555) 123-4567"
-            />
-          </div>
+          {/* PHONE NUMBER - Email is already set from signup */}
+          <CustomFormField
+            fieldType={FormFieldType.PHONE_INPUT}
+            control={form.control}
+            name="phone"
+            label="Phone Number"
+            placeHolder="(555) 123-4567"
+          />
 
           {/* BirthDate & Gender */}
           <div className="flex flex-col gap-6 xl:flex-row">
